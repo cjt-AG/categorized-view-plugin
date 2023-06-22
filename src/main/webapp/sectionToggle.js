@@ -1,6 +1,6 @@
 function restoreJobGroupCollapseState(viewName, groupName) {
     var collapseState = getGroupState(viewName, groupName);
-    handle = $$("#handle_" + groupName).first();
+    var handle = document.querySelector("#handle_" + groupName);
     if (collapseState == 'none') {
         hideJobGroup(handle, viewName, groupName)
     } else {
@@ -9,7 +9,7 @@ function restoreJobGroupCollapseState(viewName, groupName) {
 }
 
 function toggleJobGroupVisibility(viewName, group) {
-    var handle = $$("#handle_" + group).first();
+    var handle = document.querySelector("#handle_" + group);
     if (handle.getAttribute("collapseState") == "collapsed") {
         showJobGroup(handle, viewName, group)
     } else {
@@ -19,34 +19,39 @@ function toggleJobGroupVisibility(viewName, group) {
 
 function hideJobGroup(handle, viewName, group) {
     handle.setAttribute("collapseState", "collapsed");
-    $$('.' + group).each(
-        function (e) {
+    document.querySelectorAll('.' + group).forEach(
+        e => {
             e.style.display = "none"
         }
     )
     setGroupState(viewName, group, "none");
-    var src = $$("#handle_" + group + " img").first().src;
+    let selectedJobGroup = document.querySelector("#handle_" + group + " img")
+    var src = selected.src;
     src = src.replace(/collapse.png/, "expand.png")
-    $$("#handle_" + group + " img").first().src = src;
+    selectedJobGroup.src = src;
 }
 
 function showJobGroup(handle, viewName, group) {
     handle.setAttribute("collapseState", "expanded");
-    $$('.' + group).each(
-        function (e) {
+    document.querySelectorAll('.' + group).forEach(
+        e => {
             e.style.display = "";
+            /*
+            FIXME animation
             $(e).setOpacity(0)
             new YAHOO.util.Anim(e, {
                 opacity: {
                     to: 1
                 }
             }, 0.2, YAHOO.util.Easing.easeIn).animate();
+            */
         }
     )
     setGroupState(viewName, group, "");
-    var src = $$("#handle_" + group + " img").first().src;
+    let selectedJobGroup = document.querySelector("#handle_" + group + " img")
+    var src = selectedJobGroup.src;
     src = src.replace(/expand.png/, "collapse.png")
-    $$("#handle_" + group + " img").first().src = src;
+    selectedJobGroup.src = src;
 }
 
 function getGroupStates(viewName) {
@@ -69,5 +74,15 @@ function getGroupState(viewName, groupName) {
 function setGroupState(viewName, groupName, state) {
     var groupStates = getGroupStates(viewName)
     groupStates[groupName] = state
-    localStorage.setItem("jenkins.categorized-view-collapse-state_" + viewName, Object.toJSON(groupStates));
+    localStorage.setItem("jenkins.categorized-view-collapse-state_" + viewName, toJson(groupStates));
+}
+
+function toJson(obj) {
+    if (Object.toJSON) {
+        // Prototype.js
+        return Object.toJSON(obj);
+    } else {
+        // Standard
+        return JSON.stringify(obj);
+    }
 }

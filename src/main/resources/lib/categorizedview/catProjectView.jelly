@@ -99,8 +99,8 @@ THE SOFTWARE.
     </j:if>
   </div>
   <script type="text/javascript">
-    $$("table.categorizedSortable").each(function(e){
-      e.sortable = new  CategorizedSortable.CategorizedSortable(e);  
+    documnt.querySelectorAll("table.categorizedSortable").forEach(e => {
+      e.sortable = new CategorizedSortable.CategorizedSortable(e);
     })
   </script>
 </j:jelly>
